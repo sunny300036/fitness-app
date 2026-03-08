@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>90 Day Transformation</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+}
+
+h1{text-align:center}
+
+.task{margin:6px 0}
+
+.progress{
+width:100%;
+background:#334155;
+height:20px;
+border-radius:10px;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+width:0%;
+background:#22c55e;
+}
+
+.badge{
+display:inline-block;
+padding:6px 10px;
+border-radius:6px;
+margin:4px;
+background:#475569;
+}
+
+.unlocked{
+background:#22c55e;
+}
+
+button{
+padding:8px 15px;
+background:#22c55e;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+input{
+padding:8px;
+margin:5px;
+}
+
+img{
+max-width:100%;
+margin-top:10px;
+border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>90 Day Transformation</h1>
+
+<div class="card">
+<h3>Day Tracker</h3>
+<p>Day <span id="day">1</span> / 90</p>
+<button onclick="nextDay()">Next Day</button>
+</div>
+
+<div class="card">
+<h3>Progress</h3>
+<div class="progress">
+<div id="bar" class="bar"></div>
+</div>
+<p id="percent">0%</p>
+</div>
+
+<div class="card">
+<h3>Daily Streak</h3>
+<p id="streak">0 Days</p>
+</div>
+
+<div class="card">
+<h3>Achievements</h3>
+<div id="badge7" class="badge">7 Days</div>
+<div id="badge30" class="badge">30 Days</div>
+<div id="badge90" class="badge">90 Days</div>
+</div>
+
+<div class="card">
+<h3>Daily Diet Plan</h3>
+
+<p>🕔 5:00 AM – Warm Water + Lemon</p>
+<p>🍳 7:00 AM – Breakfast (Moong Chilla / Paneer / Oats)</p>
+<p>🍎 10:30 AM – Fruit / Roasted Chana</p>
+<p>🍛 12:00 PM – Lunch (2 Roti + Dal + Sabji + Salad)</p>
+<p>☕ 5:00 PM – Green Tea + Peanuts</p>
+<p>🥗 7:30 PM – Dinner (Paneer / Soup / Salad)</p>
+<p>💧 Water – 3–4 Litres Daily</p>
+
+</div>
+
+<div class="card">
+<h3>Body Fat Calculator</h3>
+
+<input id="height" placeholder="Height cm">
+<input id="weightFat" placeholder="Weight kg">
+<input id="waist" placeholder="Waist cm">
+
+<button onclick="calcFat()">Calculate</button>
+
+<p id="fatResult"></p>
+
+</div>
+
+<div class="card">
+<h3>Weight Tracker</h3>
+
+<input id="weightInput" placeholder="Enter weight">
+<button onclick="addWeight()">Save</button>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+<div class="card">
+
+<h3>Before Photo</h3>
+<input type="file" onchange="uploadPhoto(event,'before')">
+<img id="beforeImg">
+
+<h3>After Photo</h3>
+<input type="file" onchange="uploadPhoto(event,'after')">
+<img id="afterImg">
+
+</div>
+
+<div class="card">
+<h3>Daily Checklist</h3>
+<div id="tasks"></div>
+</div>
+
+</div>
+
+<script>
+
+const tasks=[
+
+"5:00 AM Wake Up",
+"Warm Water + Lemon",
+
+"Fast Walk / Cardio – 30–45 Minutes",
+"Squats – 3 Sets × 25",
+"Pushups – 3 Sets × 15",
+"Plank – 3 Sets × 45 sec",
+"Leg Raises – 3 Sets × 20",
+"Mountain Climbers – 3 Sets × 30",
+"Stretching – 5 Minutes",
+
+"Healthy Breakfast",
+"Lunch No Junk",
+"Evening Snack",
+"Light Dinner Before 8:30",
+
+"3–4L Water",
+"No Sugar",
+
+"8000+ Steps",
+"Sleep Before 10:30"
+
+]
+
+let container=document.getElementById("tasks")
+
+tasks.forEach((task,i)=>{
+
+let checked=localStorage.getItem("task"+i)=="true"
+
+let html=`
+<div class="task">
+<input type="checkbox" ${checked?"checked":""}
+onchange="saveTask(${i},this.checked)">
+${task}
+</div>`
+
+container.innerHTML+=html
+
+})
+
+function saveTask(i,val){
+
+localStorage.setItem("task"+i,val)
+updateProgress()
+
+}
+
+function updateProgress(){
+
+let done=0
+
+tasks.forEach((t,i)=>{
+if(localStorage.getItem("task"+i)=="true") done++
+})
+
+let percent=Math.round(done/tasks.length*100)
+
+document.getElementById("bar").style.width=percent+"%"
+document.getElementById("percent").innerText=percent+"%"
+
+}
+
+updateProgress()
+
+let day=Number(localStorage.getItem("day")||1)
+document.getElementById("day").innerText=day
+
+function nextDay(){
+
+day++
+if(day>90) day=90
+
+localStorage.setItem("day",day)
+document.getElementById("day").innerText=day
+
+updateStreak()
+
+}
+
+let streak=Number(localStorage.getItem("streak")||0)
+
+function updateStreak(){
+
+streak++
+localStorage.setItem("streak",streak)
+
+document.getElementById("streak").innerText=streak+" Days"
+
+checkBadges()
+
+}
+
+function checkBadges(){
+
+if(streak>=7)
+document.getElementById("badge7").classList.add("unlocked")
+
+if(streak>=30)
+document.getElementById("badge30").classList.add("unlocked")
+
+if(streak>=90)
+document.getElementById("badge90").classList.add("unlocked")
+
+}
+
+document.getElementById("streak").innerText=streak+" Days"
+checkBadges()
+
+let weights=JSON.parse(localStorage.getItem("weights")||"[]")
+
+function addWeight(){
+
+let w=document.getElementById("weightInput").value
+
+weights.push(w)
+
+localStorage.setItem("weights",JSON.stringify(weights))
+
+drawChart()
+
+}
+
+let chart
+
+function drawChart(){
+
+let ctx=document.getElementById("chart")
+
+if(chart) chart.destroy()
+
+chart=new Chart(ctx,{
+
+type:"line",
+
+data:{
+labels:weights.map((_,i)=>"Day "+(i+1)),
+datasets:[{
+label:"Weight",
+data:weights,
+borderColor:"lime"
+}]
+}
+
+})
+
+}
+
+drawChart()
+
+function calcFat(){
+
+let height=document.getElementById("height").value
+let weight=document.getElementById("weightFat").value
+let waist=document.getElementById("waist").value
+
+let fat=(waist*0.74)-(weight*0.082)-44.74
+
+document.getElementById("fatResult").innerText=
+"Estimated Body Fat: "+Math.round(fat)+"%"
+
+}
+
+function uploadPhoto(e,type){
+
+let reader=new FileReader()
+
+reader.onload=function(){
+
+localStorage.setItem(type,reader.result)
+document.getElementById(type+"Img").src=reader.result
+
+}
+
+reader.readAsDataURL(e.target.files[0])
+
+}
+
+document.getElementById("beforeImg").src=localStorage.getItem("before")
+document.getElementById("afterImg").src=localStorage.getItem("after")
+
+</script>
+
+</body>
+</html>
