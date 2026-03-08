@@ -3,6 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>90 Day Transformation</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -13,7 +14,11 @@ font-family:Arial;
 background:#0f172a;
 color:white;
 margin:0;
-padding:20px;
+padding:15px;
+}
+
+h1{
+text-align:center;
 }
 
 .container{
@@ -25,17 +30,27 @@ margin:auto;
 background:#1e293b;
 padding:20px;
 border-radius:12px;
-margin-bottom:20px;
+margin-bottom:15px;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
 }
 
-h1{text-align:center}
+button{
+background:#22c55e;
+border:none;
+padding:10px 15px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+}
 
-.task{margin:6px 0}
+.task{
+margin:5px 0;
+}
 
 .progress{
 width:100%;
+height:18px;
 background:#334155;
-height:20px;
 border-radius:10px;
 overflow:hidden;
 }
@@ -48,22 +63,14 @@ background:#22c55e;
 
 .badge{
 display:inline-block;
+background:#475569;
 padding:6px 10px;
 border-radius:6px;
 margin:4px;
-background:#475569;
 }
 
 .unlocked{
 background:#22c55e;
-}
-
-button{
-padding:8px 15px;
-background:#22c55e;
-border:none;
-border-radius:6px;
-cursor:pointer;
 }
 
 input{
@@ -73,8 +80,13 @@ margin:5px;
 
 img{
 max-width:100%;
-margin-top:10px;
 border-radius:10px;
+margin-top:10px;
+}
+
+.install{
+text-align:center;
+margin-bottom:15px;
 }
 
 </style>
@@ -87,46 +99,63 @@ border-radius:10px;
 
 <h1>90 Day Transformation</h1>
 
+<div class="install">
+<button onclick="installApp()">📱 Install App</button>
+</div>
+
 <div class="card">
+
 <h3>Day Tracker</h3>
 <p>Day <span id="day">1</span> / 90</p>
 <button onclick="nextDay()">Next Day</button>
+
 </div>
 
 <div class="card">
+
 <h3>Progress</h3>
+
 <div class="progress">
 <div id="bar" class="bar"></div>
 </div>
+
 <p id="percent">0%</p>
+
 </div>
 
 <div class="card">
+
 <h3>Daily Streak</h3>
+
 <p id="streak">0 Days</p>
+
 </div>
 
 <div class="card">
+
 <h3>Achievements</h3>
+
 <div id="badge7" class="badge">7 Days</div>
 <div id="badge30" class="badge">30 Days</div>
 <div id="badge90" class="badge">90 Days</div>
+
 </div>
 
 <div class="card">
+
 <h3>Daily Diet Plan</h3>
 
 <p>🕔 5:00 AM – Warm Water + Lemon</p>
-<p>🍳 7:00 AM – Breakfast (Moong Chilla / Paneer / Oats)</p>
-<p>🍎 10:30 AM – Fruit / Roasted Chana</p>
-<p>🍛 12:00 PM – Lunch (2 Roti + Dal + Sabji + Salad)</p>
-<p>☕ 5:00 PM – Green Tea + Peanuts</p>
-<p>🥗 7:30 PM – Dinner (Paneer / Soup / Salad)</p>
-<p>💧 Water – 3–4 Litres Daily</p>
+<p>🍳 7:00 AM – Breakfast</p>
+<p>🍎 10:30 AM – Fruit</p>
+<p>🍛 12:00 PM – Lunch</p>
+<p>☕ 5:00 PM – Green Tea</p>
+<p>🥗 7:30 PM – Dinner</p>
 
 </div>
 
 <div class="card">
+
 <h3>Body Fat Calculator</h3>
 
 <input id="height" placeholder="Height cm">
@@ -140,6 +169,7 @@ border-radius:10px;
 </div>
 
 <div class="card">
+
 <h3>Weight Tracker</h3>
 
 <input id="weightInput" placeholder="Enter weight">
@@ -151,19 +181,22 @@ border-radius:10px;
 
 <div class="card">
 
-<h3>Before Photo</h3>
+<h3>Progress Photos</h3>
+
 <input type="file" onchange="uploadPhoto(event,'before')">
 <img id="beforeImg">
 
-<h3>After Photo</h3>
 <input type="file" onchange="uploadPhoto(event,'after')">
 <img id="afterImg">
 
 </div>
 
 <div class="card">
+
 <h3>Daily Checklist</h3>
+
 <div id="tasks"></div>
+
 </div>
 
 </div>
@@ -172,26 +205,26 @@ border-radius:10px;
 
 const tasks=[
 
-"5:00 AM Wake Up",
+"Wake Up 5:00 AM",
 "Warm Water + Lemon",
 
-"Fast Walk / Cardio – 30–45 Minutes",
-"Squats – 3 Sets × 25",
-"Pushups – 3 Sets × 15",
-"Plank – 3 Sets × 45 sec",
-"Leg Raises – 3 Sets × 20",
-"Mountain Climbers – 3 Sets × 30",
-"Stretching – 5 Minutes",
+"Fast Walk 30-45 min",
+"Squats 3x25",
+"Pushups 3x15",
+"Plank 45 sec x3",
+"Leg Raises 3x20",
+"Mountain Climbers 3x30",
+"Stretching",
 
 "Healthy Breakfast",
 "Lunch No Junk",
 "Evening Snack",
-"Light Dinner Before 8:30",
+"Light Dinner",
 
-"3–4L Water",
+"Drink 3-4L Water",
 "No Sugar",
 
-"8000+ Steps",
+"8000 Steps",
 "Sleep Before 10:30"
 
 ]
@@ -202,8 +235,7 @@ tasks.forEach((task,i)=>{
 
 let checked=localStorage.getItem("task"+i)=="true"
 
-let html=`
-<div class="task">
+let html=`<div class="task">
 <input type="checkbox" ${checked?"checked":""}
 onchange="saveTask(${i},this.checked)">
 ${task}
@@ -238,6 +270,7 @@ document.getElementById("percent").innerText=percent+"%"
 updateProgress()
 
 let day=Number(localStorage.getItem("day")||1)
+
 document.getElementById("day").innerText=day
 
 function nextDay(){
@@ -246,6 +279,7 @@ day++
 if(day>90) day=90
 
 localStorage.setItem("day",day)
+
 document.getElementById("day").innerText=day
 
 updateStreak()
@@ -279,6 +313,7 @@ document.getElementById("badge90").classList.add("unlocked")
 }
 
 document.getElementById("streak").innerText=streak+" Days"
+
 checkBadges()
 
 let weights=JSON.parse(localStorage.getItem("weights")||"[]")
@@ -304,9 +339,7 @@ let ctx=document.getElementById("chart")
 if(chart) chart.destroy()
 
 chart=new Chart(ctx,{
-
 type:"line",
-
 data:{
 labels:weights.map((_,i)=>"Day "+(i+1)),
 datasets:[{
@@ -315,7 +348,6 @@ data:weights,
 borderColor:"lime"
 }]
 }
-
 })
 
 }
@@ -352,6 +384,21 @@ reader.readAsDataURL(e.target.files[0])
 
 document.getElementById("beforeImg").src=localStorage.getItem("before")
 document.getElementById("afterImg").src=localStorage.getItem("after")
+
+function installApp(){
+alert("Open Chrome menu and tap Add to Home Screen")
+}
+
+setInterval(()=>{
+
+let now=new Date()
+let hour=now.getHours()
+
+if(hour==5){
+alert("Time for Workout 💪")
+}
+
+},60000)
 
 </script>
 
